@@ -19,7 +19,7 @@ initialize = compiler::cmpfun(function(env, nRows, nCols, len) {
   env$l <- 0L
 })
 
-l1tp.getTargetVector = function(y, cohHelper, yearsHelper, effects)
+l1tp.getTargetVector = function(y, cohHelper, yearsHelper, effects, weights)
 {
   nAges = dim(y)[1]
   nYears = dim(y)[2]
@@ -35,7 +35,7 @@ l1tp.getTargetVector = function(y, cohHelper, yearsHelper, effects)
   }
 
   return(
-    c(y, rep(0, agesDiffLength + yearsDiffLength + agesYearsDiffLength +
+    c(y * weights, rep(0, agesDiffLength + yearsDiffLength + agesYearsDiffLength +
       ifelse(effects, yearsEffectDiffLength + yearsEffectDistLength + cohortDiffLength + cohortDistLength, 0L)))
   )
 }
@@ -87,15 +87,15 @@ InvP = function(p, nAges, nYears)
   return(c((p-1L)%%nAges+1L, (p-1L)%/%nAges+1L))
 }
 
-getV = compiler::cmpfun(function(ageInd, yearInd, nAges, nYears, cm, row, cohHelper, yearsHelper, effects)
+getV = compiler::cmpfun(function(ageInd, yearInd, nAges, nYears, cm, row, cohHelper, yearsHelper, effects, weight = 1)
 {
   p = P(ageInd, yearInd, nAges, nYears)
-  append(cm, c(1), c(row), c(p))
+  append(cm, weight, c(row), c(p))
   if(effects) {
     pp = yearsHelper$p[ageInd, yearInd]
-    if(pp > 0L) append(cm, c(1), c(row), c(nAges*nYears + pp))
+    if(pp > 0L) append(cm, weight, c(row), c(nAges*nYears + pp))
     ppp = cohHelper$p[ageInd, yearInd]
-    if(ppp > 0L) append(cm, c(1), c(row), c(nAges*nYears + yearsHelper$l + ppp))
+    if(ppp > 0L) append(cm, weight, c(row), c(nAges*nYears + yearsHelper$l + ppp))
   }
 })
 
@@ -227,7 +227,7 @@ prepareYearsHelper = compiler::cmpfun(function(yearsHelper, dims, affdYears)
   yearsHelper$l <- c
 })
 
-l1tp.getDesignMatrix = compiler::cmpfun(function(dims, lambda, lambdaaa, lambdayy, lambdaay, lambdaYearsEffect, thetaYearsEffect, lambdaCohortEffect, thetaCohortEffect, cornerLength, cohHelper, yearsHelper, effects)
+l1tp.getDesignMatrix = compiler::cmpfun(function(dims, lambda, lambdaaa, lambdayy, lambdaay, lambdaYearsEffect, thetaYearsEffect, lambdaCohortEffect, thetaCohortEffect, cornerLength, cohHelper, yearsHelper, effects, weights)
 {
   nAges = dims[1]
   nYears = dims[2]
@@ -268,7 +268,7 @@ l1tp.getDesignMatrix = compiler::cmpfun(function(dims, lambda, lambdaaa, lambday
   for(a in 1L:nAges) {
     for(y in 1L:nYears) {
       p = P(a, y, nAges, nYears)
-      getV(a, y, nAges, nYears, m, p, cohHelper = cohHelper, yearsHelper = yearsHelper, effects = effects)
+      getV(a, y, nAges, nYears, m, p, cohHelper = cohHelper, yearsHelper = yearsHelper, effects = effects, weight = weights[a, y])
       paa = PAA(a, y, nAges, nYears)
       if(paa > 0L) {
         getVaa(a, y, nAges, nYears, lambda * lambdaaa, m, agesOffset + paa)
@@ -311,7 +311,8 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
                                     lambdaYearsEffect = 5, thetaYearsEffect = 0.1*lambda,
                                     lambdaCohortEffect = 5, thetaCohortEffect = 0.1*lambda,
                                     cornerLength = 7, effects = TRUE, affdDiagonals = NULL, affdYears = NULL,
-                                    control = list(nnzlmax = 1000000, nsubmax = 2000000, tmpmax = 200000))
+                                    control = list(nnzlmax = 1000000, nsubmax = 2000000, tmpmax = 200000),
+                                    weights = NULL)
 {
   if(effects) {
     yearsHelper = new.env(parent = .GlobalEnv)
@@ -323,8 +324,13 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
     yearsHelper = NULL
     cohHelper = NULL
   }
+  if(is.null(weights)) weights = matrix(1, nrow(data), ncol(data))
 
-  m = l1tp.getDesignMatrix(dim(data), lambda = lambda, lambdaaa = lambdaaa, lambdayy = lambdayy, lambdaay = lambdaay, lambdaYearsEffect = lambdaYearsEffect, thetaYearsEffect = thetaYearsEffect, lambdaCohortEffect = lambdaCohortEffect, thetaCohortEffect = thetaCohortEffect, cornerLength = cornerLength, cohHelper = cohHelper, yearsHelper = yearsHelper, effects = effects)
+  m = l1tp.getDesignMatrix(dim(data), lambda = lambda, lambdaaa = lambdaaa, lambdayy = lambdayy, lambdaay = lambdaay,
+                           lambdaYearsEffect = lambdaYearsEffect, thetaYearsEffect = thetaYearsEffect,
+                           lambdaCohortEffect = lambdaCohortEffect, thetaCohortEffect = thetaCohortEffect,
+                           cornerLength = cornerLength, cohHelper = cohHelper, yearsHelper = yearsHelper, effects = effects,
+                           weights = weights)
   ra = m$ra[1L:m$l]
   ia = m$ia[1L:m$l]
   ja = m$ja[1L:m$l]
@@ -332,7 +338,7 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
   sm = as.matrix.csr(mcoo)
 
   rm(mcoo)
-  target <- l1tp.getTargetVector(data, cohHelper = cohHelper, yearsHelper = yearsHelper, effects = effects)
+  target <- l1tp.getTargetVector(data, cohHelper = cohHelper, yearsHelper = yearsHelper, effects = effects, weights = weights)
 
   goodRows = rep(FALSE, length(target))
   goodRows[ia[ra != 0]] = TRUE
@@ -368,7 +374,8 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
 
 #' Smooths demographic data optionally taking into account period and cohort effects
 #'
-#' @param data Demographic data presented as a matrix.
+#' @param data Demographic data (log mortality) presented as a matrix.
+#' Row numbers represent ages and column numbers represet time.
 #' @param lambda Controls "general flexibility" of the smooth surface.
 #' @param lambdaaa Controls "flexibility" of the smooth surface in age direction (first dimension).
 #' @param lambdayy Controls "flexibility" of the smooth surface in years direction (second dimension).
@@ -382,6 +389,9 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
 #' @param affdDiagonals Diagonals to be used for cohort effects.
 #' @param affdYears Years to be used for period effects.
 #' @param control Control data passed directly to \code{\link[quantreg]{rq.fit.sfn}} function..
+#' @param weights Define how much every observation effect the resulting smooth surface.
+#' The parameter must have same dimentions as \code{data} parameter.
+#' Weights can be set to reciprocal of estimated standard deviation of the data.
 #' @return List of three components: smooth surface, period effects, cohort effects.
 #' @examples
 #' \dontrun{

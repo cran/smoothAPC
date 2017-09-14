@@ -8,18 +8,21 @@ taking into account period and cohort effects}
 autoSmoothAPC(data, effects = TRUE, cornerLength = 7,
   affdDiagonals = NULL, affdYears = NULL, lower = head(c(0.01, 0.01, 0.01,
   2, 0.001, 2, 0.001), 3 + effects * 4), upper = head(c(1.2, 1.8, 1.2, 12,
-  0.4, 12, 0.4), 3 + effects * 4), init = head(c(0.1, 0.1, 0.2, 4, 0.01, 4,
-  0.01), 3 + effects * 4), reltol = 0.001, parameters = NULL, trace = F,
-  control = list(nnzlmax = 1e+06, nsubmax = 2e+06, tmpmax = 2e+05))
+  0.4, 12, 0.4), 3 + effects * 4), init = head(c(0.1, 0.1, 0.2, 4, 0.001, 4,
+  0.001), 3 + effects * 4), reltol = 0.001, parameters = NULL, trace = F,
+  control = list(nnzlmax = 1e+06, nsubmax = 2e+06, tmpmax = 2e+05),
+  weights = NULL)
 }
 \arguments{
-\item{data}{Demographic data presented as a matrix.}
+\item{data}{Demographic data (log mortality) presented as a matrix.
+Row numbers represent ages and column numbers represet time.}
 
 \item{effects}{Controls if the cohort and period effects are taken into account.}
 
 \item{cornerLength}{Sets the smallest length of a diagonal to be considered for cohort effects.}
 
-\item{affdDiagonals}{Diagonals to be used for cohort effects. The first diagonal is at the bottom left corner of the data matrix.}
+\item{affdDiagonals}{Diagonals to be used for cohort effects.
+The first diagonal is at the bottom left corner of the data matrix (maximal age and minimal time in the data matrix).}
 
 \item{affdYears}{Years to be used for period effects.}
 
@@ -36,6 +39,10 @@ autoSmoothAPC(data, effects = TRUE, cornerLength = 7,
 \item{trace}{Controls if tracing is on.}
 
 \item{control}{The control data passed directly to \code{\link[quantreg]{rq.fit.sfn}} function.}
+
+\item{weights}{Define how much every observation effect the resulting smooth surface.
+The parameter must have same dimentions as \code{data} parameter.
+Weights can be set to reciprocal of estimated standard deviation of the data.}
 }
 \value{
 A list of four components: smooth surface, period effects, cohort effects and parameters
@@ -58,13 +65,12 @@ plot(sm, "cohort")
 
 }
 }
-\author{
-Alexander Dokumentov
-}
 \references{
 \url{http://robjhyndman.com/working-papers/mortality-smoothing/}
 }
 \seealso{
 \code{\link{smoothAPC}} and \code{\link{signifAutoSmoothAPC}}. The latter might give slightly better performance.
 }
-
+\author{
+Alexander Dokumentov
+}
