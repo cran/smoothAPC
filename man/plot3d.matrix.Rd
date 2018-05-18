@@ -21,7 +21,7 @@
 Presents matrix as a 3D surface
 }
 \examples{
-\dontrun{
+\donttest{
 
 plot3d(matrix(rnorm(100),10,10))
 plot3d(matrix(1:100,10,10), c("Dimension 1", "Dimension 2", "Value"))
@@ -36,3 +36,4 @@ plot3d(m, color.palette = rainbow)
 \author{
 Alexander Dokumentov
 }
+

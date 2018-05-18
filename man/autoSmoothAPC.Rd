@@ -53,7 +53,7 @@ If period and cohort effects are taken into account (effects = TRUE) the method 
 available years and diagonals for estimation of the period and cohort effects.
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(demography)
 m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -65,12 +65,13 @@ plot(sm, "cohort")
 
 }
 }
+\author{
+Alexander Dokumentov
+}
 \references{
-\url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+\url{http://robjhyndman.com/publications/mortality-smoothing/}
 }
 \seealso{
 \code{\link{smoothAPC}} and \code{\link{signifAutoSmoothAPC}}. The latter might give slightly better performance.
 }
-\author{
-Alexander Dokumentov
-}
+

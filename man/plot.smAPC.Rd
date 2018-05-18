@@ -26,7 +26,7 @@
 Presents demographic data as a heatmap
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(demography)
 m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -44,3 +44,4 @@ plot(sm, "original", main = "Original data")
 \author{
 Alexander Dokumentov
 }
+

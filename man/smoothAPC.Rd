@@ -52,7 +52,7 @@ List of three components: smooth surface, period effects, cohort effects.
 Smooths demographic data optionally taking into account period and cohort effects
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(demography)
 m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -62,12 +62,13 @@ plot(sm)
 
 }
 }
+\author{
+Alexander Dokumentov
+}
 \references{
-\url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+\url{http://robjhyndman.com/publications/mortality-smoothing/}
 }
 \seealso{
 \code{\link{autoSmoothAPC}}, \code{\link{signifAutoSmoothAPC}}.
 }
-\author{
-Alexander Dokumentov
-}
+

@@ -54,7 +54,7 @@ plot3D = function(x, y, z,
 #' @param main Title for the plot.
 #' @param ... Other parameters. They are currently ignored.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' library(demography)
 #' m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -90,7 +90,7 @@ plot.smAPC = function(x,
 #' (for example \code{\link[grDevices]{rainbow}}).
 #' @param ... Other parameters. They are currently ignored.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' library(demography)
 #' m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -166,7 +166,7 @@ plot_smAPC = function(x,
 #' @param main Title for the plot.
 #' @param ... Other parameters. They are currently ignored.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' plot(matrix(rnorm(100),10,10), main = "Noise")
 #' plot(matrix(1:100,10,10), c("Dimension 1", "Dimension 2"), main = "Value")
@@ -193,7 +193,7 @@ plot.matrix = function(x, labs = c("X", "Y"), color.palette = c("default", "spec
 #' (for example \code{\link[grDevices]{rainbow}}).
 #' @param ... Other parameters. They are currently ignored.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' plot3d(matrix(rnorm(100),10,10))
 #' plot3d(matrix(1:100,10,10), c("Dimension 1", "Dimension 2", "Value"))

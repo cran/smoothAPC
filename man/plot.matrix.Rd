@@ -23,7 +23,7 @@
 Presents matrix as a heatmap
 }
 \examples{
-\dontrun{
+\donttest{
 
 plot(matrix(rnorm(100),10,10), main = "Noise")
 plot(matrix(1:100,10,10), c("Dimension 1", "Dimension 2"), main = "Value")
@@ -38,3 +38,4 @@ plot(m, color.palette = rainbow)
 \author{
 Alexander Dokumentov
 }
+

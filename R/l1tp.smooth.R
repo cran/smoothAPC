@@ -394,7 +394,7 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
 #' Weights can be set to reciprocal of estimated standard deviation of the data.
 #' @return List of three components: smooth surface, period effects, cohort effects.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' library(demography)
 #' m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -403,7 +403,7 @@ l1tp.smooth.demogdata.nc = function(data, lambda = 1, lambdaaa = 1, lambdayy = 1
 #' plot(sm)
 #'
 #' }
-#' @references \url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+#' @references \url{http://robjhyndman.com/publications/mortality-smoothing/}
 #' @author Alexander Dokumentov
 #' @seealso \code{\link{autoSmoothAPC}}, \code{\link{signifAutoSmoothAPC}}.
 #' @export

@@ -1,6 +1,6 @@
 Package: smoothAPC
-Version: 0.2
-Date: 2017-09-14
+Version: 0.3
+Date: 2018-05-18
 Title: Smoothing of Two-Dimensional Demographic Data, Optionally Taking
         into Account Period and Cohort Effects
 Author: Alexander Dokumentov, Rob J Hyndman
@@ -16,9 +16,9 @@ Description: The implemented method uses for smoothing bivariate thin plate
 License: GPL (>= 2)
 URL: https://bitbucket.org/alexanderdokumentov/smoothapcpackage
 LazyData: true
-RoxygenNote: 6.0.0
+RoxygenNote: 5.0.1
 Suggests: testthat, demography
 NeedsCompilation: no
-Packaged: 2017-09-14 04:12:34 UTC; adokumen
+Packaged: 2018-05-18 08:21:43 UTC; alex
 Repository: CRAN
-Date/Publication: 2017-09-14 12:51:43 UTC
+Date/Publication: 2018-05-18 09:43:08 UTC

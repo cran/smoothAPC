@@ -3,7 +3,7 @@
 # @param x Result of smoothing (object of class \code{smAPC}).
 # @param ... Other parameters. They are currently ignored.
 # @examples
-# \dontrun{
+# \donttest{
 #
 # library(demography)
 # m = log(fr.mort$rate$female[1:30, 150:160])

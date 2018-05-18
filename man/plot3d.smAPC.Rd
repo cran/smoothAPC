@@ -24,7 +24,7 @@
 Presents demographic data as a 3D surface
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(demography)
 m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -42,3 +42,4 @@ plot3d(sm, "original", color.palette = rainbow)
 \author{
 Alexander Dokumentov
 }
+

@@ -31,14 +31,14 @@ smoothAPC.wrapper = function(...)
 # @param weights Define how much every observation effect the resulting smooth surface.
 # @return A vector of optimal smoothing parameters.
 # @examples
-# \dontrun{
+# \donttest{
 #
 # library(demography)
 # m <- log(fr.mort$rate$female[1:30, 150:160])
 # parameters <- estPar(m)
 #
 # }
-# @references \url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+# @references \url{http://robjhyndman.com/publications/mortality-smoothing/}
 # @author Alexander Dokumentov
 # @export
 
@@ -177,7 +177,7 @@ estYY = function(data,
 #' @return A list of four components: smooth surface, period effects, cohort effects and parameters
 #' used for smoothing (passed as a parameter or estimated).
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' library(demography)
 #' m <- log(fr.mort$rate$female[1:30, 150:160])
@@ -188,7 +188,7 @@ estYY = function(data,
 #' plot(sm, "cohort")
 #'
 #' }
-#' @references \url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+#' @references \url{http://robjhyndman.com/publications/mortality-smoothing/}
 #' @author Alexander Dokumentov
 #' @seealso \code{\link{smoothAPC}} and \code{\link{signifAutoSmoothAPC}}. The latter might give slightly better performance.
 #' @export
@@ -253,15 +253,15 @@ getAffected = function(resid, p.value = 0.05)
 {
   d = diags(resid)
   p.values.t.1 = vapply(2:(nrow(d)-1), function(i) my.t.test(x=d[i,]), c(p.value=0))
-  affdDiagonals1 = (2:(nrow(d)-1))[p.values.t.1 <= 0.05]
+  affdDiagonals1 = (2:(nrow(d)-1))[p.values.t.1 <= p.value]
   p.values.t.2 = vapply(3:(nrow(d)-2), function(i) my.t.test(x=d[i,-1]*d[i,-ncol(d)], alternative="greater"), c(p.value=0))
-  affdDiagonals2 = (3:(nrow(d)-2))[p.values.t.2 <= 0.05]
+  affdDiagonals2 = (3:(nrow(d)-2))[p.values.t.2 <= p.value]
   affdDiagonals = sort(union(affdDiagonals1, affdDiagonals2))
 
   p.values.t.3 = vapply(1:ncol(resid), function(j) my.t.test(x=resid[,j]), c(p.value=0))
-  affdYears1 = (1:ncol(resid))[p.values.t.3 <= 0.05]
+  affdYears1 = (1:ncol(resid))[p.values.t.3 <= p.value]
   p.values.t.4 = vapply(1:ncol(resid), function(j) my.t.test(x=resid[-1,j]*resid[-nrow(resid),j], alternative="greater"), c(p.value=0))
-  affdYears2 = (1:ncol(resid))[p.values.t.4 <= 0.05]
+  affdYears2 = (1:ncol(resid))[p.values.t.4 <= p.value]
   affdYears = sort(union(affdYears1, affdYears2))
 
   return(list(affdYears = affdYears, affdDiagonals = affdDiagonals))
@@ -292,7 +292,7 @@ getAffected = function(resid, p.value = 0.05)
 #' @return A list of six components: smooth surface, period effects, cohort effects, parameters
 #' used for smoothing, diagonals used for cohort effects and years used for period effects.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #' library(demography)
 #' m <- log(fr.mort$rate$female[1:30, 120:139])
@@ -304,7 +304,7 @@ getAffected = function(resid, p.value = 0.05)
 #' plot(sm, "cohort")
 #'
 #' }
-#' @references \url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+#' @references \url{http://robjhyndman.com/publications/mortality-smoothing/}
 #' @author Alexander Dokumentov
 #' @seealso \code{\link{autoSmoothAPC}}, \code{\link{smoothAPC}}.
 #' @export

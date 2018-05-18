@@ -46,7 +46,7 @@ period and cohort effects in the data. It also uses a few steps to estimate
 model's parameters. The procedure is supposed to outperform \code{\link{autoSmoothAPC}} slightly.
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(demography)
 m <- log(fr.mort$rate$female[1:30, 120:139])
@@ -59,12 +59,13 @@ plot(sm, "cohort")
 
 }
 }
+\author{
+Alexander Dokumentov
+}
 \references{
-\url{http://robjhyndman.com/working-papers/mortality-smoothing/}
+\url{http://robjhyndman.com/publications/mortality-smoothing/}
 }
 \seealso{
 \code{\link{autoSmoothAPC}}, \code{\link{smoothAPC}}.
 }
-\author{
-Alexander Dokumentov
-}
+
